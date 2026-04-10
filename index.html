@@ -498,10 +498,19 @@
             </p>
           </div>
 
-          <figure class="paper-figure figure-padded">
-            <img src="static/images/paper-svg/billiard-planning.svg" alt="Billiard planning pipeline: candidate actions are sampled at random and evaluated by rolling out stochastic motion trajectories, selecting the action with the highest expected reward">
+          <figure class="paper-figure billiard-figure">
+            <div class="billiard-split">
+              <div class="billiard-svg-half">
+                <img src="static/images/paper-svg/billiard-planning.svg" alt="Billiard planning pipeline: candidate actions are sampled at random and evaluated by rolling out stochastic motion trajectories, selecting the action with the highest expected reward">
+              </div>
+              <div class="billiard-video-half">
+                <video autoplay loop muted playsinline>
+                  <source src="static/videos/billiard_planning.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
             <figcaption>
-              <strong>Planning via Random Search in Motion Space.</strong> Candidate initial velocities are sampled randomly; for each, the model rolls out many stochastic trajectories and scores them against the task objective. The model has no knowledge of the planning task.
+              <strong>Planning via Random Search in Motion Space.</strong> Candidate initial velocities are sampled randomly; for each, the model rolls out many stochastic trajectories and scores them against the task objective. The model has no knowledge of the planning task. <em>Right:</em> an illustrated walkthrough of the billiard planning process.
             </figcaption>
           </figure>
 

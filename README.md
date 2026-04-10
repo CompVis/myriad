@@ -13,7 +13,7 @@
   <a href="https://ommer-lab.com/people/ommer/" target="_blank">Björn Ommer</a><sup>1,2</sup>
 </div>
 <p align="center"> 
-  <b><sup>1,2</sup>CompVis @ LMU Munich, MCML, <sup>3</sup>Netflix</b><br/>CVPR 2026
+  <b><sup>1</sup>CompVis @ LMU Munich, <sup>2</sup>MCML, <sup>3</sup>Netflix</b><br/>CVPR 2026
 </p>
 
 ![Myriad predicts distributions over sparse motion autoregressively](static/images/paper-svg/teaser-qualitative.svg)

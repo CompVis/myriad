@@ -463,6 +463,35 @@ body {
 
 .figure-padded img { padding: 1rem; }
 
+.billiard-split {
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.billiard-svg-half {
+  flex: 1.0226 1 0%;
+  min-width: 0;
+}
+
+.billiard-svg-half img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.billiard-video-half {
+  flex: 0.9009 1 0%;
+  min-width: 0;
+}
+
+.billiard-video-half video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
 .figure-grid .paper-figure img,
 .benchmark-figures .paper-figure img {
   padding: .85rem;
@@ -845,6 +874,8 @@ code {
   .section { padding: 2rem 1rem; }
 
   .figure-grid { grid-template-columns: 1fr; }
+
+  .billiard-split { flex-direction: column; }
 
   .figure-grid .paper-figure img,
   .benchmark-figures .paper-figure img,
