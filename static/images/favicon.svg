@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   width="64"
+   height="64"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="favicon.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="6.5314281"
+     inkscape:cx="14.009187"
+     inkscape:cy="36.668857"
+     inkscape:window-width="1800"
+     inkscape:window-height="1102"
+     inkscape:window-x="0"
+     inkscape:window-y="39"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g3" />
+  <circle
+     cx="10.20837"
+     cy="45.525383"
+     fill="#0f172a"
+     id="circle1"
+     r="8.4450293"
+     style="stroke-width:1.29924" />
+  <g
+     fill="none"
+     stroke-width="3.5"
+     stroke-linecap="round"
+     id="g3">
+    <path
+       d="M 10.518141,45.275764 C 20.912023,34.881882 31.305904,21.88953 57.290608,8.8971784"
+       stroke="#2563eb"
+       id="path1"
+       style="stroke-width:4.54732" />
+    <path
+       d="M 10.562794,45.205143 C 22.255911,38.708967 35.248263,36.110496 58.634497,33.512026"
+       stroke="#2563eb"
+       opacity="0.6"
+       id="path2"
+       style="stroke-width:4.54732" />
+    <path
+       d="m 10.496552,45.248761 c 10.393881,1.299235 23.386233,6.496176 46.772467,11.693117"
+       stroke="#2563eb"
+       opacity="0.35"
+       id="path3"
+       style="stroke-width:4.54732" />
+  </g>
+  <circle
+     cx="57.290607"
+     cy="8.8971806"
+     r="3.8977056"
+     fill="#2563eb"
+     id="circle3"
+     style="stroke-width:1.29924" />
+  <circle
+     cx="58.634495"
+     cy="33.512028"
+     r="3.8977056"
+     fill="#2563eb"
+     opacity="0.6"
+     id="circle4"
+     style="stroke-width:1.29924" />
+  <circle
+     cx="57.269016"
+     cy="56.941875"
+     r="3.8977056"
+     fill="#2563eb"
+     opacity="0.35"
+     id="circle5"
+     style="stroke-width:1.29924" />
+</svg>

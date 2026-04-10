@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="title" content="Envisioning the Future, One Step at a Time">
+  <meta name="description" content="Autoregressive diffusion over sparse point trajectories for efficient, multi-modal future motion reasoning from a single image.">
+  <meta name="keywords" content="computer vision, motion prediction, trajectory modeling, diffusion, world models, planning, CVPR 2026">
+  <meta name="author" content="Stefan Andreas Baumann, Jannik Wiese, Tommaso Martorella, Mahdi M. Kalayeh, Bjorn Ommer">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Envisioning the Future, One Step at a Time">
+  <meta property="og:description" content="Autoregressive diffusion over sparse trajectories for efficient future motion reasoning.">
+  <meta property="og:image" content="static/images/social_preview.png">
+  <meta property="og:image:alt" content="Teaser figure showing diverse future motion predictions from a single image">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Envisioning the Future, One Step at a Time">
+  <meta name="twitter:description" content="Autoregressive diffusion over sparse trajectories for efficient future motion reasoning.">
+  <meta name="twitter:image" content="static/images/social_preview.png">
+  <meta name="citation_title" content="Envisioning the Future, One Step at a Time">
+  <meta name="citation_author" content="Baumann, Stefan Andreas">
+  <meta name="citation_author" content="Wiese, Jannik">
+  <meta name="citation_author" content="Martorella, Tommaso">
+  <meta name="citation_author" content="Kalayeh, Mahdi M.">
+  <meta name="citation_author" content="Ommer, Bjorn">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_conference_title" content="CVPR 2026">
+  <meta name="theme-color" content="#ffffff">
+  <title>Envisioning the Future, One Step at a Time</title>
+
+  <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="256x256" href="static/images/favicon.png">
+  <link rel="apple-touch-icon" href="static/images/favicon.png">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="more-works-container">
+    <button class="more-works-btn" type="button" onclick="toggleMoreWorks()" title="Related Works" aria-expanded="false" aria-controls="moreWorksDropdown">
+      <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5a2 2 0 00-2 2v14l4-3h12a2 2 0 002-2V5a2 2 0 00-2-2m0 11H6.33L5 15.25V5h14zm-9-7h7v2h-7zm0 3h5v2h-5zM7 7h2v5H7z"/></svg>
+      <span>Related Works</span>
+      <svg class="icon-svg dropdown-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+    </button>
+    <div class="more-works-dropdown" id="moreWorksDropdown" aria-hidden="true">
+      <div class="dropdown-header">
+        <h4>Related Works</h4>
+        <button class="close-btn" onclick="toggleMoreWorks()" aria-label="Close related works">
+          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71L12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.29 19.7 2.88 18.3 9.17 12 2.88 5.71 4.29 4.29l6.3 6.3 6.29-6.3z"/></svg>
+        </button>
+      </div>
+      <div class="works-list">
+        <a href="https://compvis.github.io/flow-poke-transformer/" class="work-item" target="_blank" rel="noreferrer">
+          <div class="work-info">
+            <h5>What If - Flow Poke Transformer</h5>
+            <p>Our direct predecessor: single-step motion prediction from sparse interactions in a single image.</p>
+            <span class="work-venue">ICCV 2025</span>
+          </div>
+          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14z"/><path d="M5 5h6v2H7v10h10v-4h2v6H5z"/></svg>
+        </a>
+        <a href="https://koljabauer.github.io/long-term-motion-webpage/" class="work-item" target="_blank" rel="noreferrer">
+          <div class="work-info">
+            <h5>Long-Term Motion Prediction</h5>
+            <p>Complementary work on extending motion prediction to longer time horizons from video.</p>
+            <span class="work-venue">CVPR 2026</span>
+          </div>
+          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14z"/><path d="M5 5h6v2H7v10h10v-4h2v6H5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l-7 7 1.41 1.41L11 8.83V19h2V8.83l4.59 4.58L19 12z"/></svg>
+  </button>
+
+  <main>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero publication-header">
+      <div class="hero-body">
+        <div class="container is-max-desktop has-text-centered">
+          <p class="publication-venue">CVPR 2026</p>
+          <h1 class="title publication-title">Envisioning the Future,<br class="mobile-break"> One Step at a Time</h1>
+
+          <div class="publication-authors">
+            <span class="author-block"><a href="https://stefan-baumann.eu/" target="_blank" rel="noreferrer">Stefan Andreas Baumann</a><sup>1,2,*</sup>,</span>
+            <span class="author-block"><a href="https://mcml.ai/research/groups/ommer/" target="_blank" rel="noreferrer">Jannik Wiese</a><sup>1,2,*</sup>,</span>
+            <span class="author-block"><a href="https://openreview.net/profile?id=~Tommaso_Martorella1" target="_blank" rel="noreferrer">Tommaso Martorella</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://openreview.net/profile?id=~Mahdi_M._Kalayeh1" target="_blank" rel="noreferrer">Mahdi M. Kalayeh</a><sup>3</sup>,</span>
+            <span class="author-block"><a href="https://ommer-lab.com/people/ommer/" target="_blank" rel="noreferrer">Bjorn Ommer</a><sup>1,2</sup></span>
+          </div>
+
+          <div class="publication-affiliations">
+            <span><sup>1</sup>CompVis @ LMU Munich</span>
+            <span><sup>2</sup>MCML</span>
+            <span><sup>3</sup>Netflix</span>
+          </div>
+
+          <p class="equal-contrib"><sup>*</sup>Equal contribution</p>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a class="external-link button is-normal is-rounded is-dark" href="static/envisioning_paper.pdf">
+                <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v14H6zm7 1.5V9h5.5zM9 13h2.5a2.5 2.5 0 010 5H10v3H9zm1 1v3h1.5a1.5 1.5 0 000-3zm5 0c1.66 0 3 1.34 3 3v1c0 1.66-1.34 3-3 3h-2v-7zm-1 1v5h1a2 2 0 002-2v-1a2 2 0 00-2-2zm-8 0h2v1H7v1h1v1H7v2H6z"/></svg></span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a class="external-link button is-normal is-rounded is-dark placeholder-link" href="#" onclick="return false;" aria-disabled="true">
+                <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.27 5.57 8.3 5 6 5a4 4 0 00-4 4v9a1 1 0 001.45.89C5.05 18.09 6.39 17.75 8 17.75c1.82 0 3.54.43 4 1 .46-.57 2.18-1 4-1 1.61 0 2.95.34 4.55 1.14A1 1 0 0022 18V9a4 4 0 00-4-4c-2.3 0-4.27.57-6 1.5M4 9a2 2 0 012-2c2.04 0 3.79.53 5 1.33v8.2c-1.3-.5-2.67-.78-4-.78-1.03 0-2.03.14-3 .42zm16 7.17c-.97-.28-1.97-.42-3-.42-1.33 0-2.7.28-4 .78v-8.2c1.21-.8 2.96-1.33 5-1.33a2 2 0 012 2z"/></svg></span>
+                <span>arXiv (coming soon)</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a class="external-link button is-normal is-rounded is-dark" href="https://github.com/CompVis/flow-poke-transformer">
+                <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5A12 12 0 008.2 23.9c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.38-1.33-1.75-1.33-1.75-1.09-.73.08-.72.08-.72 1.2.09 1.84 1.22 1.84 1.22 1.08 1.82 2.82 1.3 3.5.99.1-.77.42-1.3.76-1.6-2.67-.3-5.47-1.32-5.47-5.86 0-1.3.47-2.37 1.24-3.21-.13-.3-.54-1.5.12-3.13 0 0 1.01-.32 3.3 1.23A11.6 11.6 0 0112 6.6c1.02 0 2.05.14 3.01.4 2.29-1.55 3.29-1.23 3.29-1.23.67 1.63.26 2.83.13 3.13.77.84 1.23 1.91 1.23 3.21 0 4.55-2.8 5.55-5.48 5.85.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58A12 12 0 0012 .5"/></svg></span>
+                <span>Code</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TEASER ==================== -->
+    <section class="hero teaser">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <figure class="teaser-figure">
+            <img src="static/images/paper-svg/teaser-qualitative.svg" alt="Diverse future motion predictions from single images across different open-world scenes" loading="eager">
+            <img src="static/images/paper-svg/teaser-billiards.svg" alt="Planning billiard shots by exploring thousands of counterfactual motion trajectories" loading="eager">
+            <figcaption>
+              From a single image, our model envisions diverse, physically consistent futures by predicting sparse point trajectories step by step. Its efficiency enables exploring thousands of counterfactual rollouts directly in motion space - here illustrated for billiards planning, where candidate shots are evaluated by simulating many possible outcomes.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TL;DR ==================== -->
+    <section class="section hero is-light" id="tldr">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <h2 class="title is-3 section-title">TL;DR</h2>
+          <div class="content tldr-copy">
+            <p>
+              Instead of generating dense future video, we predict distributions over <em>sparse point trajectories</em>, step by step, from a single image. An autoregressive diffusion model with an efficiency-oriented architecture makes this <em>orders of magnitude faster</em> than video-based world models - fast enough to explore thousands of plausible futures and plan over them.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== KEY NUMBERS ==================== -->
+    <section class="section key-numbers-section" id="highlights">
+      <div class="container is-max-desktop">
+        <div class="key-numbers">
+          <div class="key-number">
+            <span class="key-value">3,000<span class="key-unit">&times;</span></span>
+            <span class="key-label">Faster than video models</span>
+            <span class="key-context">2,200 vs &lt;1 trajectory samples per minute</span>
+          </div>
+          <div class="key-number">
+            <span class="key-value">10<span class="key-unit">&times;</span></span>
+            <span class="key-label">Fewer parameters</span>
+            <span class="key-context">0.6B vs 1.3-14B for video baselines</span>
+          </div>
+          <div class="key-number">
+            <span class="key-value">5<span class="key-unit">&times;</span></span>
+            <span class="key-label">More accurate under compute budget</span>
+            <span class="key-context">OWM minADE: 0.013 vs 0.066 for best video model</span>
+          </div>
+          <div class="key-number">
+            <span class="key-value">78<span class="key-unit">%</span> <span class="key-vs">vs 16%</span></span>
+            <span class="key-label">Billiard planning accuracy</span>
+            <span class="key-context">Ours vs best dense video baseline</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== METHOD ==================== -->
+    <section class="section" id="method">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title">Method</h2>
+        <div class="content paper-copy">
+          <p>
+            We formulate future reasoning as autoregressive prediction over sparse point trajectories. Given a single image and a set of query points, the model factorizes the joint distribution over future motion causally - first over time, then over individual trajectories within each step. A lightweight flow-matching head captures the multi-modal distribution of next-step displacements, enabling fast sampling with KV-cache decoding.
+          </p>
+        </div>
+
+        <div class="figure-grid">
+          <figure class="paper-figure">
+            <img src="static/images/paper-svg/motion-token-construction.svg" alt="Motion token construction: combining Fourier-embedded motion, trajectory identity, and bilinearly sampled image features at current and origin positions">
+            <figcaption>
+              <strong>Motion Tokens.</strong> Each token combines Fourier-embedded motion, a randomized trajectory identifier, and image features sampled at the current and origin positions.
+            </figcaption>
+          </figure>
+          <figure class="paper-figure">
+            <img src="static/images/paper-svg/positional-encoding.svg" alt="Shared positional encoding scheme encoding current position, origin position, and time for both motion and image tokens">
+            <figcaption>
+              <strong>Positional Encoding.</strong> Motion and image tokens share one reference frame via axial RoPE encoding current position, origin, and time.
+            </figcaption>
+          </figure>
+          <figure class="paper-figure">
+            <img src="static/images/paper-svg/fast-reasoning-blocks.svg" alt="Fused parallel transformer blocks compared to standard sequential layers, reducing kernel launches for faster throughput">
+            <figcaption>
+              <strong>Fast Reasoning Blocks.</strong> Parallel residual blocks fuse self-attention, cross-attention, and FFN into a single step, cutting kernel launches for high rollout throughput.
+            </figcaption>
+          </figure>
+          <figure class="paper-figure">
+            <img src="static/images/paper-svg/fm-head.svg" alt="Flow matching head with cached conditioning and multiscale tanh-saturated input stack for handling heavy-tailed motion distributions">
+            <figcaption>
+              <strong>Flow-Matching Head.</strong> A cached conditioning mechanism and multiscale tanh-saturated inputs handle the heavy-tailed distribution of real-world motion.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OWM BENCHMARK ==================== -->
+    <section class="section hero is-light" id="benchmark">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <h2 class="title is-3 section-title">OWM: Open-World Motion Benchmark</h2>
+          <div class="content paper-copy">
+            <p>
+              To evaluate open-world motion prediction, we introduce OWM - a benchmark of 95 diverse in-the-wild videos under static cameras. Each scene provides a reference frame, query points, and verified ground-truth trajectories spanning 2.5-6.5 seconds. We assess both accuracy (best-of-<em>N</em>) and <em>search efficiency</em>: given a fixed 5-minute wall-clock budget on a reference GPU, how many plausible futures can a method explore? We supplement OWM with physical diagnostics from Physics-IQ and Physion.
+            </p>
+          </div>
+
+          <div class="benchmark-figures">
+            <figure class="paper-figure">
+              <img src="static/images/paper-svg/owm-composition.svg" alt="OWM benchmark composition: statistics showing diversity across rigid/non-rigid, single/multi-agent, and free-will categories">
+              <figcaption>
+                <strong>OWM Composition.</strong> The benchmark covers a wide variety of motion settings across rigid/non-rigid objects, single/multi-agent scenes, and constrained/free-will dynamics.
+              </figcaption>
+            </figure>
+            <figure class="paper-figure">
+              <img src="static/images/paper-svg/owm-qualitative.svg" alt="Qualitative examples from OWM showing diverse real-world scenes with predicted trajectories">
+              <figcaption>
+                <strong>Examples.</strong> Diverse real-world scenes from OWM spanning different motion types and complexities.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== RESULTS ==================== -->
+    <section class="section" id="results">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title">Results</h2>
+
+        <!-- Metric Explanation -->
+        <div class="metric-explainer">
+          <h3 class="subtitle is-5 table-title">Evaluation Setup</h3>
+          <p>
+            We compare against state-of-the-art open-weight video generation models. For video baselines, trajectories are extracted from generated frames using off-the-shelf point trackers.
+          </p>
+          <dl class="metric-list">
+            <dt>minADE &darr;</dt>
+            <dd>L2 distance of the <em>closest</em> hypothesis to ground truth. Lower is better.</dd>
+            <dt>N=5</dt>
+            <dd>5 hypotheses per method, best scored.</dd>
+            <dt>T=5min</dt>
+            <dd>Fixed 5-minute GPU budget (equal compute); generate as many hypotheses as possible, best scored. Measures <em>search efficiency</em>. DNF = did not finish.</dd>
+            <dt>(a) OWM</dt>
+            <dd>Open-world motion (in-the-wild videos).</dd>
+            <dt>(b) PhysicsIQ</dt>
+            <dd>Physical plausibility in controlled solid-mechanics settings (Motamed et al., WACV 2026).</dd>
+            <dt>(c) Physion</dt>
+            <dd>Intuitive physics understanding benchmark (Bear et al., NeurIPS D&amp;B 2021).</dd>
+          </dl>
+        </div>
+
+        <!-- Combined Main Results Table -->
+        <div class="results-block">
+          <h3 class="subtitle is-4 table-title">Open-World Motion &amp; Physical Diagnostics</h3>
+          <div class="content paper-copy">
+            <p>
+              With only 5 samples, our approach - despite being orders of magnitude faster and over 10&times; smaller - matches the prediction accuracy of the best open-weight video generation models. Under the primary 5-minute budget, this efficiency advantage becomes decisive: most video models cannot even finish within the time limit, while ours generates thousands of hypotheses to find substantially more accurate predictions.
+            </p>
+          </div>
+          <div class="results-table-wrapper">
+            <table class="table is-fullwidth results-table">
+                <thead>
+                  <tr>
+                    <th rowspan="2">Method</th>
+                    <th rowspan="2">Params</th>
+                    <th rowspan="2" class="has-text-right">Throughput</th>
+                    <th colspan="2" class="has-text-centered">(a) OWM &darr;</th>
+                    <th colspan="2" class="has-text-centered">(b) PhysicsIQ &darr;</th>
+                    <th colspan="2" class="has-text-centered">(c) Physion &darr;</th>
+                  </tr>
+                  <tr>
+                    <th class="has-text-right col-faded"><span class="th-sub">N=5</span></th>
+                    <th class="has-text-right"><span class="th-sub">T=5min</span></th>
+                    <th class="has-text-right col-faded"><span class="th-sub">N=5</span></th>
+                    <th class="has-text-right"><span class="th-sub">T=5min</span></th>
+                    <th class="has-text-right col-faded"><span class="th-sub">N=5</span></th>
+                    <th class="has-text-right"><span class="th-sub">T=5min</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>MAGI-1</td>
+                    <td>4.5B</td>
+                    <td class="has-text-right">0.3 / min</td>
+                    <td class="has-text-right col-faded"><u>0.037</u></td>
+                    <td class="has-text-right"><u>0.066</u></td>
+                    <td class="has-text-right col-faded">0.126</td>
+                    <td class="has-text-right">0.169</td>
+                    <td class="has-text-right col-faded"><u>0.061</u></td>
+                    <td class="has-text-right"><u>0.081</u></td>
+                  </tr>
+                  <tr>
+                    <td>Wan2.2 I2V</td>
+                    <td>14B</td>
+                    <td class="has-text-right">0.14 / min</td>
+                    <td class="has-text-right col-faded">0.039</td>
+                    <td class="has-text-right">DNF</td>
+                    <td class="has-text-right col-faded">0.116</td>
+                    <td class="has-text-right">DNF</td>
+                    <td class="has-text-right col-faded">0.069</td>
+                    <td class="has-text-right">DNF</td>
+                  </tr>
+                  <tr>
+                    <td>CogVideoX 1.5</td>
+                    <td>5B</td>
+                    <td class="has-text-right">0.05 / min</td>
+                    <td class="has-text-right col-faded">0.051</td>
+                    <td class="has-text-right">DNF</td>
+                    <td class="has-text-right col-faded"><strong>0.100</strong></td>
+                    <td class="has-text-right">DNF</td>
+                    <td class="has-text-right col-faded">0.063</td>
+                    <td class="has-text-right">DNF</td>
+                  </tr>
+                  <tr>
+                    <td>SkyReels V2 (DF)</td>
+                    <td>1.3B</td>
+                    <td class="has-text-right">0.3 / min</td>
+                    <td class="has-text-right col-faded">0.058</td>
+                    <td class="has-text-right">0.068</td>
+                    <td class="has-text-right col-faded">0.128</td>
+                    <td class="has-text-right"><u>0.137</u></td>
+                    <td class="has-text-right col-faded">0.069</td>
+                    <td class="has-text-right">0.084</td>
+                  </tr>
+                  <tr>
+                    <td>SVD 1.1</td>
+                    <td>1.5B</td>
+                    <td class="has-text-right"><u>0.71 / min</u></td>
+                    <td class="has-text-right col-faded">0.054</td>
+                    <td class="has-text-right">0.119</td>
+                    <td class="has-text-right col-faded">0.138</td>
+                    <td class="has-text-right">0.241</td>
+                    <td class="has-text-right col-faded">0.070</td>
+                    <td class="has-text-right">0.147</td>
+                  </tr>
+                  <tr class="ours-row">
+                    <td>Ours</td>
+                    <td><strong>0.6B</strong></td>
+                    <td class="has-text-right"><strong>2,200 / min</strong></td>
+                    <td class="has-text-right col-faded"><strong>0.029</strong></td>
+                    <td class="has-text-right"><strong>0.013</strong></td>
+                    <td class="has-text-right col-faded"><u>0.115</u></td>
+                    <td class="has-text-right"><strong>0.045</strong></td>
+                    <td class="has-text-right col-faded"><strong>0.048</strong></td>
+                    <td class="has-text-right"><strong>0.020</strong></td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+          <figure class="paper-figure figure-padded results-figure-block">
+            <img src="static/images/paper-svg/owm-time-accuracy.svg" alt="Time-accuracy trade-off on OWM: log time versus best-of-N MSE; our method reaches low error far faster than video baselines">
+            <figcaption>
+              <strong>Time-Accuracy Trade-off on OWM.</strong> More hypotheses improve accuracy for all methods; our sparse formulation makes this orders of magnitude more efficient.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- OWM Detailed Subset Results -->
+        <div class="results-block">
+          <div class="expandable-section">
+            <button class="expand-btn" onclick="toggleExpand(this)" aria-expanded="false">
+              <span data-show="Show per-category OWM breakdown" data-hide="Hide per-category OWM breakdown">Show per-category OWM breakdown</span>
+              <svg class="icon-svg expand-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+            <div class="expandable-content">
+              <p class="expand-note">MinADE (lower is better) across all OWM subsets. Values are mean L2 distance in normalized coordinates.</p>
+              <div class="results-table-wrapper">
+                <table class="table is-fullwidth results-table detailed-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Method</th>
+                      <th colspan="2" class="has-text-centered col-group-a">Rigid</th>
+                      <th colspan="2" class="has-text-centered col-group-b">Non-rigid</th>
+                      <th colspan="2" class="has-text-centered col-group-a">Single-agent</th>
+                      <th colspan="2" class="has-text-centered col-group-b">Multi-agent</th>
+                      <th colspan="2" class="has-text-centered col-group-a">w/ Free will</th>
+                      <th colspan="2" class="has-text-centered col-group-b">w/o Free will</th>
+                    </tr>
+                    <tr>
+                      <th class="has-text-right col-group-a"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-a"><span class="th-sub">T=5m</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">T=5m</span></th>
+                      <th class="has-text-right col-group-a"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-a"><span class="th-sub">T=5m</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">T=5m</span></th>
+                      <th class="has-text-right col-group-a"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-a"><span class="th-sub">T=5m</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">N=5</span></th>
+                      <th class="has-text-right col-group-b"><span class="th-sub">T=5m</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>MAGI-1</td>
+                      <td class="has-text-right"><u>.032</u></td><td class="has-text-right">.058</td>
+                      <td class="has-text-right"><u>.039</u></td><td class="has-text-right">.069</td>
+                      <td class="has-text-right"><strong>.020</strong></td><td class="has-text-right"><u>.044</u></td>
+                      <td class="has-text-right">.048</td><td class="has-text-right">.080</td>
+                      <td class="has-text-right">.040</td><td class="has-text-right">.066</td>
+                      <td class="has-text-right"><strong>.030</strong></td><td class="has-text-right">.065</td>
+                    </tr>
+                    <tr>
+                      <td>Wan2.2</td>
+                      <td class="has-text-right">.042</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right"><strong>.038</strong></td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.039</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right"><strong>.039</strong></td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right"><strong>.036</strong></td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.045</td><td class="has-text-right">DNF</td>
+                    </tr>
+                    <tr>
+                      <td>CogVideoX</td>
+                      <td class="has-text-right">.051</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.051</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.041</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.052</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.049</td><td class="has-text-right">DNF</td>
+                      <td class="has-text-right">.054</td><td class="has-text-right">DNF</td>
+                    </tr>
+                    <tr>
+                      <td>SkyReels V2</td>
+                      <td class="has-text-right">.061</td><td class="has-text-right">.071</td>
+                      <td class="has-text-right">.056</td><td class="has-text-right"><u>.066</u></td>
+                      <td class="has-text-right">.048</td><td class="has-text-right">.056</td>
+                      <td class="has-text-right">.064</td><td class="has-text-right"><u>.075</u></td>
+                      <td class="has-text-right">.054</td><td class="has-text-right"><u>.063</u></td>
+                      <td class="has-text-right">.065</td><td class="has-text-right">.076</td>
+                    </tr>
+                    <tr>
+                      <td>SVD 1.1</td>
+                      <td class="has-text-right">.048</td><td class="has-text-right"><u>.055</u></td>
+                      <td class="has-text-right">.057</td><td class="has-text-right">.073</td>
+                      <td class="has-text-right"><u>.037</u></td><td class="has-text-right">.053</td>
+                      <td class="has-text-right">.065</td><td class="has-text-right">.077</td>
+                      <td class="has-text-right">.060</td><td class="has-text-right">.069</td>
+                      <td class="has-text-right"><u>.042</u></td><td class="has-text-right"><u>.064</u></td>
+                    </tr>
+                    <tr class="ours-row">
+                      <td>Ours</td>
+                      <td class="has-text-right"><strong>.031</strong></td><td class="has-text-right"><strong>.007</strong></td>
+                      <td class="has-text-right"><u>.039</u></td><td class="has-text-right"><strong>.016</strong></td>
+                      <td class="has-text-right"><u>.036</u></td><td class="has-text-right"><strong>.008</strong></td>
+                      <td class="has-text-right"><u>.044</u></td><td class="has-text-right"><strong>.017</strong></td>
+                      <td class="has-text-right"><u>.037</u></td><td class="has-text-right"><strong>.014</strong></td>
+                      <td class="has-text-right">.044</td><td class="has-text-right"><strong>.011</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BILLIARD PLANNING ==================== -->
+    <section class="section hero is-light" id="billiards">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <h2 class="title is-3 section-title">Downstream: Billiard Planning</h2>
+          <div class="content paper-copy">
+            <p>
+              The efficiency of our model enables a new capability: planning by exploring motion-space rollouts. Importantly, the model is completely task-agnostic - it is never trained for or made aware of any downstream planning objective; it simply predicts how the scene might evolve.
+            </p>
+            <p>
+              To isolate the model's suitability for planning from any influence of the planning algorithm, we deliberately use the simplest possible approach: pure random search over candidate actions. Initial velocities ("pokes") on the cue ball are sampled at random, the model rolls out many stochastic futures for each, and the action whose rollouts best satisfy the task objective is selected. Even with this naive planner, our approach achieves 78% accuracy - far above all dense video baselines (4-16%) and approaching the 84% of a ground-truth physics simulator oracle. A more sophisticated planning algorithm would likely yield substantially better results still.
+            </p>
+          </div>
+
+          <figure class="paper-figure figure-padded">
+            <img src="static/images/paper-svg/billiard-planning.svg" alt="Billiard planning pipeline: candidate actions are sampled at random and evaluated by rolling out stochastic motion trajectories, selecting the action with the highest expected reward">
+            <figcaption>
+              <strong>Planning via Random Search in Motion Space.</strong> Candidate initial velocities are sampled randomly; for each, the model rolls out many stochastic trajectories and scores them against the task objective. The model has no knowledge of the planning task.
+            </figcaption>
+          </figure>
+
+          <div class="results-block">
+            <div class="results-table-wrapper compact-table-wrapper">
+              <table class="table is-fullwidth results-table compact-results">
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th class="has-text-right">Accuracy &uarr;</th>
+                    <th class="has-text-right">Throughput<br><span class="th-sub">(actions/min)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="oracle-row"><td>Simulator Oracle</td><td class="has-text-right">84%</td><td class="has-text-right">55,162</td></tr>
+                  <tr><td>Images-to-Video Diff.</td><td class="has-text-right"><u>16%</u></td><td class="has-text-right">19.8</td></tr>
+                  <tr><td>AR Images-to-Video Diff.</td><td class="has-text-right">8%</td><td class="has-text-right">18.6</td></tr>
+                  <tr><td>Full Trajectory Diffusion</td><td class="has-text-right">8%</td><td class="has-text-right">160.8</td></tr>
+                  <tr><td>Flow Poke Transformer</td><td class="has-text-right">4%</td><td class="has-text-right"><strong>13,423</strong></td></tr>
+                  <tr class="ours-row"><td>Ours</td><td class="has-text-right"><strong>78%</strong></td><td class="has-text-right"><u>496</u></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note">All methods use the same random-search planner to ensure a fair comparison that isolates world model quality from planning algorithm sophistication.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BIBTEX ==================== -->
+    <section class="section" id="bibtex">
+      <div class="container is-max-desktop content">
+        <div class="bibtex-header">
+          <h2 class="title is-3 section-title">BibTeX</h2>
+          <button class="copy-bibtex-btn" type="button" onclick="copyBibTeX()">
+            <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4a2 2 0 00-2 2v12h2V3h12zm3 4H8a2 2 0 00-2 2v14a2 2 0 002 2h11a2 2 0 002-2V7a2 2 0 00-2-2m0 16H8V7h11z"/></svg>
+            <span class="copy-text">Copy</span>
+          </button>
+        </div>
+        <pre id="bibtex-code"><code>@inproceedings{baumann2026envisioning,
+  title     = {Envisioning the Future, One Step at a Time},
+  author    = {Baumann, Stefan Andreas and Wiese, Jannik and Martorella, Tommaso and Kalayeh, Mahdi M. and Ommer, Bjorn},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container is-max-desktop">
+      <div class="content has-text-centered">
+        <p>Website template adapted from the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noreferrer">Academic Project Page Template</a>.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script defer src="static/js/index.js"></script>
+</body>
+</html>
