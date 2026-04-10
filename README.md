@@ -7,9 +7,9 @@
 
 <div align="center">
   <a href="https://stefan-baumann.eu/" target="_blank">Stefan A. Baumann</a><sup>*,1,2</sup> · 
-  <a href="" target="_blank">Jannik Wiese</a><sup>*,1,2</sup> · 
-  <a href="" target="_blank">Tommaso Martorella</a><sup>1,2</sup> · 
-  <a href="" target="_blank">Mahdi M. Kalayeh</a><sup>3</sup> · 
+  <a href="" target="https://scholar.google.com/citations?hl=en&user=hgMtPk0AAAAJ">Jannik Wiese</a><sup>*,1,2</sup> · 
+  <a href="" target="https://scholar.google.com/citations?user=3HCXNX4AAAAJ&hl=en">Tommaso Martorella</a><sup>1,2</sup> · 
+  <a href="" target="https://scholar.google.com/citations?hl=en&user=gleejrUAAAAJ">Mahdi M. Kalayeh</a><sup>3</sup> · 
   <a href="https://ommer-lab.com/people/ommer/" target="_blank">Björn Ommer</a><sup>1,2</sup>
 </div>
 <p align="center"> 
