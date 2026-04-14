@@ -33,7 +33,7 @@ From a single image MYRIAD predicts distributions over sparse point trajectories
 ```bibtex
 @inproceedings{baumann2026envisioning,
     title={Envisioning the Future, One Step at a Time},
-    author={Baumann, Stefan Andreas and Wiese, Jannik and Martorella, Tommaso and Kalayeh, Mahdi M. and Ommer, Bj{\"o}rn},
+    author={Stefan Andreas Baumann and Jannik Wiese and Tommaso Martorella and Mahdi M. Kalayeh and Bj{\"o}rn Ommer},
     booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
     year={2026}
 }
